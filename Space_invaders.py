@@ -49,8 +49,9 @@ score_shown = 0
 over_font = pygame.font.Font('freesansbold.ttf', 64)
 title = pygame.font.Font('freesansbold.ttf', 64)
 start = pygame.font.Font('freesansbold.ttf', 32)
-restart_text_text = pygame.font.Font('freesansbold.ttf', 32)
-restarted = 'no'
+
+clock = pygame.time.Clock()
+
 def show_score(x, y):
     score = font.render('score :' + str(score_value), True, (255, 255, 255))
     s.blit(score, (x, y))
@@ -66,10 +67,6 @@ def title_font(x, y):
 def start_font(x, y):
     start_text = start.render('Press F to start', True, (255, 255, 255))
     s.blit(start_text, (290, 250))
-
-def restart_font_font(x, y):
-    restart_text = restart_text_text.render('Press R to restart', True, (255, 255, 255))
-    s.blit(restart_text, (260, 320))
 
 def player(x, y):
     s.blit(playerImg, (x, y))
@@ -92,6 +89,44 @@ def isCollision(enemyX, enemyY, bulletX, bulletY):
     else:
         return False
 
+def restart():
+    global score_value, score_shown, restarted
+    score_value = 0
+    score_shown = 0
+    enemy(enemyX[i], enemyY[i], i)
+    player(playerX, playerY)
+    restarted = 'no'
+
+running2 = True
+running3 = True
+while running3:
+    s.blit(background, (0, 0))
+    player(playerX, playerY)
+    player(300, playerY)
+    player(230, playerY)
+    player(160, playerY)
+    player(90, playerY)
+    player(20, playerY)
+    player(440, playerY)
+    player(510, playerY)
+    player(580, playerY)
+    player(650, playerY)
+    player(720, playerY)
+    playerY -= 8
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running3 = False
+            running2 = False
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_ESCAPE:
+                running2 = False
+                running3 = False
+    if playerY == 0:
+        running3 = False
+        running2 = True
+        break
+    clock.tick(60)
+    pygame.display.update()
 
 running = True
 def game():
@@ -105,9 +140,9 @@ def game():
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    playerX_change = -5
+                    playerX_change = -6
                 if event.key == pygame.K_d:
-                    playerX_change = 5
+                    playerX_change = 6
                 if event.key == pygame.K_SPACE:
                     if bullet_state == 'ready':
                         bullet_sound = mixer.Sound('laser.wav')
@@ -129,18 +164,17 @@ def game():
                 for j in range(num_of_enemy):
                     enemyY[j] = 2000
                 game_over_text(250, 250)
-                restart_font_font(250, 250)
                 if score_shown == 0:
-                    print(score_value)
+                    print('Your score is :', score_value)
                     score_shown += 1
                 break
 
             enemyX[i] += enemyX_change[i]
             if enemyX[i] <= 0:
-                enemyX_change[i] = 3
+                enemyX_change[i] = 6
                 enemyY[i] += enemyY_change[i]
             elif enemyX[i] >= 736:
-                enemyX_change[i] = -3
+                enemyX_change[i] = -6
                 enemyY[i] += enemyY_change[i]
             collision = isCollision(enemyX[i], enemyY[i], bulletX, bulletY)
             if collision:
@@ -164,9 +198,9 @@ def game():
 
         player(playerX, playerY)
         show_score(textX, textY)
+        clock.tick(60)
         pygame.display.update()
 
-running2 = True
 while running2:
     s.blit(background, (0, 0))
     title_font(250, 250)
@@ -176,9 +210,12 @@ while running2:
             running2 = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_f:
+                playerX = 370
+                playerY = 480
                 game()
                 running2 = False
-
+        if event.type == pygame.KEYUP:
+            if event.type == pygame.K_ESCAPE:
+                running2 = False
+    clock.tick(60)
     pygame.display.update()
-
-print('your score:', score_value)
