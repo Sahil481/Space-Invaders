@@ -45,11 +45,11 @@ font = pygame.font.Font('freesansbold.ttf', 32)
 
 textX = 10
 textY = 10
-score_shown = 0
 over_font = pygame.font.Font('freesansbold.ttf', 64)
 title = pygame.font.Font('freesansbold.ttf', 64)
 start = pygame.font.Font('freesansbold.ttf', 32)
-
+your_score_font = pygame.font.Font('freesansbold.ttf', 32)
+show_score_count = True
 clock = pygame.time.Clock()
 
 def show_score(x, y):
@@ -59,6 +59,10 @@ def show_score(x, y):
 def game_over_text(x, y):
     over_text = over_font.render('Game Over!', True, (255, 255, 255))
     s.blit(over_text, (200, 250))
+
+def score_text(x, y):
+    score_font = your_score_font.render(f'Your Score is {score_value}', True, (255, 255, 255))
+    s.blit(score_font, (270, 325))
 
 def title_font(x, y):
     title_text = title.render('Space Invaders', True, (255, 255, 255))
@@ -163,10 +167,9 @@ def game():
             if enemyY[i] > 440:
                 for j in range(num_of_enemy):
                     enemyY[j] = 2000
+                s.blit(background, (0, 0))
                 game_over_text(250, 250)
-                if score_shown == 0:
-                    print('Your score is :', score_value)
-                    score_shown += 1
+                score_text(250, 250)
                 break
 
             enemyX[i] += enemyX_change[i]
